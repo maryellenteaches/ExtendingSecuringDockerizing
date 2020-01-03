@@ -1,0 +1,207 @@
+{
+	"info": {
+		"_postman_id": "55ba4cf7-fd7a-43b2-a7ee-3cbd93a28f1f",
+		"name": "Explore California API's",
+		"description": "These are examples on how to invoke the Explore California Application RESTful API's",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Introduction",
+			"item": [
+				{
+					"name": "Get All Tours",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/tours",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tours"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Tour Packages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/packages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup Backpack California Tours",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/tours/search/findByTourPackageCode?code=BC",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tours",
+								"search",
+								"findByTourPackageCode"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "BC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Rating ",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer  eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjc3JfamFuZSIsImF1dGgiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ1NSIn1dLCJpYXQiOjE1Mjc1NTc1NDIsImV4cCI6MTUyNzU1ODE0Mn0.9y1HlZwh_aGV1dVTBu0uDAzC80YX8pB1naX06eApfEQ"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"score\":5,\n    \"comment\":\"I thought it was ok\",\n    \"customerId\":8\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/tours/1/ratings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tours",
+								"1",
+								"ratings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup Rating ",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/tours/1/ratings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tours",
+								"1",
+								"ratings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup Average Score",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/tours/1/ratings/average",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tours",
+								"1",
+								"ratings",
+								"average"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Rating",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"score\":1,\n    \"comment\":\"I thought it was stupid\",\n    \"customerId\":4\n}\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/tours/1/ratings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tours",
+								"1",
+								"ratings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
