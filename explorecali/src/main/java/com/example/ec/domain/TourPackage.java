@@ -3,6 +3,7 @@ package com.example.ec.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
  *
  * Created by Mary Ellen Bowman
  */
+@Table(name="tour_package")
 @Entity
 public class TourPackage implements Serializable {
     @Id
