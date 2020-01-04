@@ -9,9 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Created by Mary Ellen Bowman
  */
 @SpringBootApplication
-public class ExplorecaliApplication  {
+public class ExplorecaliApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ExplorecaliApplication.class, args);
 	}
+
 }
