@@ -186,7 +186,7 @@ public class TourRatingService {
      * @return the found TourRating
      * @throws NoSuchElementException if no TourRating found
      */
-    private TourRating verifyTourRating(int tourId, int customerId) throws NoSuchElementException {
+    public TourRating verifyTourRating(int tourId, int customerId) throws NoSuchElementException {
         return tourRatingRepository.findByTourIdAndCustomerId(tourId, customerId).orElseThrow(() ->
                 new NoSuchElementException("Tour-Rating pair for request("
                         + tourId + " for customer" + customerId));
