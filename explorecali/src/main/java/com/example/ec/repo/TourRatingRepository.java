@@ -3,6 +3,7 @@ package com.example.ec.repo;
 import com.example.ec.domain.TourRating;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Created by Mary Ellen Bowman
  */
 @RepositoryRestResource(exported = false)
-public interface TourRatingRepository extends CrudRepository<TourRating, Integer> {
+public interface TourRatingRepository extends JpaRepository<TourRating, Integer> {
 
     /**
      * Lookup all the TourRatings for a tour.
