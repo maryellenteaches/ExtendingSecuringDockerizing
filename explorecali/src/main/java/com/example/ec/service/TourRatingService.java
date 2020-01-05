@@ -149,6 +149,7 @@ public class TourRatingService {
         OptionalDouble average = ratings.stream().mapToInt((rating) -> rating.getScore()).average();
         return average.isPresent() ? average.getAsDouble():null;
     }
+
     /**
      * Service for many customers to give the same score for a service
      *
@@ -158,11 +159,11 @@ public class TourRatingService {
      */
     public void rateMany(int tourId,  int score, Integer [] customers) {
         LOGGER.info("Rate tour {} by customers {}", tourId, Arrays.asList(customers).toString());
-        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new NoSuchElementException());
-        for (Integer c : customers) {
-                LOGGER.debug("Attempt to create Tour Rating for customer {}", c);
+        tourRepository.findById(tourId).ifPresent(tour -> {
+            for (Integer c : customers) {
                 tourRatingRepository.save(new TourRating(tour, c, score));
-        }
+            }
+        });
     }
 
     /**
