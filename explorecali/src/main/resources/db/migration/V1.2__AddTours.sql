@@ -1,15 +1,4 @@
 
-insert into tour_package (code, name) values
-('BC', 'Backpack Cal'),
-('CC', 'California Calm'),
-('CH', 'California Hot springs'),
-('CY', 'Cycle California'),
-('DS', 'From Desert to Sea'),
-('KC', 'Kids California'),
-('NW', 'Nature Watch'),
-('SC', 'Snowboard Cali'),
-('TC', 'Taste of California');
-
 insert into tour  (tour_package_code, title, description, blurb, bullets, difficulty, duration, price, region, keywords) values
   (
     'BC',
@@ -407,35 +396,3 @@ insert into tour  (tour_package_code, title, description, blurb, bullets, diffic
     'Napa/Sonoma Counties',
     'Winery, hiking, relaxing, cooking, Napa Valley'
   );
-
-  insert into tour_rating (tour_id, customer_id, score, comment) values
-  (1, 4, 5, 'I loved it'),
-  (1, 5, 5, 'We loved it'),
-  (1, 6, 5, 'She loved it'),
-  (1, 7, 5, 'He loved it'),
-  (1, 8, 5, 'They loved it'),
-  (1, 9, 5, 'Everbody loved it'),
-  (1, 10, 1, 'I hated it'),
-  (1, 11, 1, 'We hated it'),
-  (2, 100, 5, 'I really thought it could have been better');
-
-
--- USER
--- hashed password: letmein
-INSERT INTO security_user (id, username, password, first_name, last_name) VALUES
-(1,  'admin', '$2a$12$ZhGS.zcWt1gnZ9xRNp7inOvo5hIT0ngN7N.pN939cShxKvaQYHnnu', 'Administrator', 'Adminstrator'),
-(2,  'csr_jane', '$2a$12$ZhGS.zcWt1gnZ9xRNp7inOvo5hIT0ngN7N.pN939cShxKvaQYHnnu', 'Jane', 'Doe'),
-(3,  'csr_mark', '$2a$12$ZhGS.zcWt1gnZ9xRNp7inOvo5hIT0ngN7N.pN939cShxKvaQYHnnu', 'Mark', 'Smith'),
-(4,  'wally', '$2a$12$ZhGS.zcWt1gnZ9xRNp7inOvo5hIT0ngN7N.pN939cShxKvaQYHnnu', 'Walter', 'Adams');
-
--- ROLES
-
-INSERT INTO security_role (id, role_name, description) VALUES (1, 'ROLE_ADMIN', 'Administrator');
-INSERT INTO security_role (id, role_name, description) VALUES (2, 'ROLE_CSR', 'Customer Service Representative');
-
-INSERT INTO user_role(user_id, role_id) VALUES
- (1, 1), -- give admin ROLE_ADMIN
- (2, 2),  -- give Jane ROLE_CSR
- (3, 2),  -- give Mark ROLE_CSR
- (4, 1),  -- give Wally ROLE_ADMIN
- (4, 2);  -- give Wally ROLE_CSR
