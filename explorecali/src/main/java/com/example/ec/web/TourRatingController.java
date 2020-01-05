@@ -15,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.AbstractMap;
-import java.util.NoSuchElementException;
 
 /**
  * Tour Rating Controller
@@ -153,18 +152,5 @@ public class TourRatingController {
         return assembler.toResource(tourRating);
     }
 
-    /**
-     * Exception handler if NoSuchElementException is thrown in this Controller
-     *
-     * @param ex
-     * @return Error message String.
-     */
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NoSuchElementException.class)
-    public String return400(NoSuchElementException ex) {
-        LOGGER.error("Unable to complete transaction", ex);
-        return ex.getMessage();
-
-    }
 
 }
