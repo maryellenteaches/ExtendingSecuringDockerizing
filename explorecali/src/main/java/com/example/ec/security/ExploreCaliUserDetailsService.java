@@ -25,7 +25,6 @@ public class ExploreCaliUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(s).orElseThrow(() ->
                 new UsernameNotFoundException(String.format("User with name %s does not exist", s)));
 
-        //org.springframework.security.core.userdetails.User.withUsername() builder
         return withUsername(user.getUsername())
                 .password(user.getPassword())
                 .authorities(user.getRoles())
