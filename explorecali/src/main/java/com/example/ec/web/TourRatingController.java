@@ -1,20 +1,21 @@
 package com.example.ec.web;
 
-import com.example.ec.domain.*;
+import com.example.ec.domain.TourRating;
 import com.example.ec.service.TourRatingService;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.data.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.http.*;
-import org.springframework.validation.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.AbstractMap;
+import java.util.NoSuchElementException;
 
 /**
  * Tour Rating Controller
@@ -47,6 +48,7 @@ public class TourRatingController {
      * @param ratingDto
      */
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_CSR')")
     @ResponseStatus(HttpStatus.CREATED)
     public void createTourRating(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("POST /tours/{}/ratings", tourId);
@@ -61,6 +63,7 @@ public class TourRatingController {
      * @param customers
      */
     @PostMapping("/{score}")
+    @PreAuthorize("hasRole('ROLE_CSR')")
     @ResponseStatus(HttpStatus.CREATED)
     public void createManyTourRatings(@PathVariable(value = "tourId") int tourId,
                                       @PathVariable(value = "score") int score,
@@ -106,6 +109,7 @@ public class TourRatingController {
      * @return The modified Rating DTO.
      */
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_CSR')")
     public RatingDto updateWithPut(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("PUT /tours/{}/ratings", tourId);
         return toDto(tourRatingService.update(tourId, ratingDto.getCustomerId(),
@@ -119,6 +123,7 @@ public class TourRatingController {
      * @return The modified Rating DTO.
      */
     @PatchMapping
+    @PreAuthorize("hasRole('ROLE_CSR')")
     public RatingDto updateWithPatch(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("PATCH /tours/{}/ratings", tourId);
         return toDto(tourRatingService.updateSome(tourId, ratingDto.getCustomerId(),
@@ -132,6 +137,7 @@ public class TourRatingController {
      * @param customerId
      */
     @DeleteMapping("/{customerId}")
+    @PreAuthorize("hasRole('ROLE_CSR')")
     public void delete(@PathVariable(value = "tourId") int tourId, @PathVariable(value = "customerId") int customerId) {
         LOGGER.info("DELETE /tours/{}/ratings/{}", tourId, customerId);
         tourRatingService.delete(tourId, customerId);
