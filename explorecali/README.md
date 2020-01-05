@@ -10,6 +10,7 @@ Install Docker For Mac/Windows/Linux
 Set JAVA_HOME
 Set M2_HOME
 Add M2_HOME/bin to the execution path
+mvn package -DskipTests
 #### Docker Commands
 ##### Start MySql Container (downloads image if not found)
 ``
@@ -65,4 +66,21 @@ or
 
 ``
 java  -Dspring.profiles.active=mysql -jar target/explorecali-2.0.0-SNAPSHOT.jar
+``
+#### Dockerize Explore California
+##### Build jar
+``
+mvn package -DskipTests
+``
+##### Build Docker image
+``
+docker build -t explorecali .
+``
+##### Run Docker container
+``
+docker run    --name ec-app -p8080:8080 -d explorecali
+``
+##### enter Docker container
+``
+docker exec -t -i ec-app /bin/bash
 ``
