@@ -6,6 +6,10 @@ by, Mary Ellen Bowman, @MEllenBowman
 
 Final Product requires External MySql Database.
 Install Docker For Mac/Windows/Linux
+#### Setup
+Set JAVA_HOME
+Set M2_HOME
+Add M2_HOME/bin to the execution path
 #### Docker Commands
 ##### Start MySql Container (downloads image if not found)
 ``
@@ -40,4 +44,25 @@ docker rm ec-mysql
 ##### Remove image (must stop and remove container first)
 ``
 docker rmi mysql:latest
+``
+#### Startup with Profile settings
+##### Default profile, H2 database
+``
+mvn spring-boot:run
+``
+
+or
+
+``
+java  -jar target/explorecali-2.0.0-SNAPSHOT.jar
+``
+##### mysql profile, MySql database (requires running container ec-mysql)
+``
+mvn spring-boot:run -Dspring.profiles.active=mysql 
+``
+
+or
+
+``
+java  -Dspring.profiles.active=mysql -jar target/explorecali-2.0.0-SNAPSHOT.jar
 ``
