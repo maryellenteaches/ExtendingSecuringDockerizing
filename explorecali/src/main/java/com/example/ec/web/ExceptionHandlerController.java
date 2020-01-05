@@ -44,17 +44,17 @@ public class ExceptionHandlerController {
         res.sendError(HttpStatus.FORBIDDEN.value(), "Access denied");
     }
 
-
     @ExceptionHandler(HttpServerErrorException.class)
     public void handleHttpServerErrorException(HttpServerErrorException ex, HttpServletResponse res) throws IOException {
         res.sendError(ex.getStatusCode().value(),ex.getMessage());
     }
 
     @ExceptionHandler(InsufficientAuthenticationException.class)
-    public void handleInsufficientAuthenticationException(Exception ex, HttpServletResponse res) throws IOException {
+    public void handleInsufficientAuthenticationException(InsufficientAuthenticationException ex, HttpServletResponse res) throws IOException {
         LOGGER.error("Handled Insufficient Authentication Exception", ex);
         res.sendError(HttpStatus.FORBIDDEN.value(), "Insufficient Authentication");
     }
+
     @ExceptionHandler(Exception.class)
     public void handleException(Exception ex, HttpServletResponse res) throws IOException {
         LOGGER.error("Handled Internal Error Exception", ex);

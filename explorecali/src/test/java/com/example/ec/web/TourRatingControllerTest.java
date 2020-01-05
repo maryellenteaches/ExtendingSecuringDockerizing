@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,12 +26,12 @@ import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpMethod.*;
 
 /**
  *
@@ -52,6 +53,10 @@ public class TourRatingControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private JwtRequestHelper jwtRequestHelper;
+
 
     @MockBean
     private TourRatingService serviceMock;
@@ -78,7 +83,10 @@ public class TourRatingControllerTest {
      */
     @Test
     public void createTourRating() throws Exception {
-        restTemplate.postForEntity(TOUR_RATINGS_URL, ratingDto, Void.class);
+
+        restTemplate.exchange(TOUR_RATINGS_URL, POST,
+                new HttpEntity(ratingDto, jwtRequestHelper.withRole("ROLE_CSR")),
+                Void.class);
 
         verify(this.serviceMock).createNew(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT);
     }
@@ -88,7 +96,9 @@ public class TourRatingControllerTest {
      */
     @Test
     public void delete() throws Exception {
-        restTemplate.delete(TOUR_RATINGS_URL + "/" + CUSTOMER_ID);
+
+        restTemplate.exchange(TOUR_RATINGS_URL + "/" + CUSTOMER_ID, DELETE,
+                new HttpEntity(jwtRequestHelper.withRole("ROLE_CSR")), Void.class);
 
         verify(serviceMock).delete(TOUR_ID, CUSTOMER_ID);
     }
@@ -98,7 +108,9 @@ public class TourRatingControllerTest {
      */
     @Test
     public void createManyTourRatings() throws Exception {
-        restTemplate.postForEntity(TOUR_RATINGS_URL + "/" + SCORE + "?customers=" + CUSTOMER_ID, ratingDto, Void.class);
+        restTemplate.exchange(TOUR_RATINGS_URL + "/" + SCORE + "?customers=" + CUSTOMER_ID, POST,
+                new HttpEntity(ratingDto, jwtRequestHelper.withRole("ROLE_CSR")), Void.class);
+
         verify(serviceMock).rateMany(TOUR_ID, SCORE, new Integer[] {CUSTOMER_ID});
     }
 
@@ -137,7 +149,8 @@ public class TourRatingControllerTest {
     public void updateWithPut() throws Exception {
         when(serviceMock.update(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT)).thenReturn(tourRatingMock);
 
-        restTemplate.put(TOUR_RATINGS_URL, ratingDto);
+        restTemplate.exchange(TOUR_RATINGS_URL, PUT,
+                new HttpEntity(ratingDto, jwtRequestHelper.withRole("ROLE_CSR")), Void.class);
 
         verify(serviceMock).update(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT);
     }
@@ -163,7 +176,8 @@ public class TourRatingControllerTest {
 
         when(serviceMock.updateSome(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT)).thenReturn(tourRatingMock);
 
-        restTemplate.patchForObject(TOUR_RATINGS_URL, ratingDto, RatingDto.class);
+        restTemplate.exchange(TOUR_RATINGS_URL, PATCH,
+                new HttpEntity(ratingDto, jwtRequestHelper.withRole("ROLE_CSR")), Void.class);
 
         verify(serviceMock).updateSome(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT);
 
