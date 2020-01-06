@@ -97,3 +97,17 @@ docker run --name ec-app-docker -p 8282:8080 -v ~/db/migration:/var/migration -e
 docker exec -t -i ec-app /bin/bash
 ``
 #####
+##### Push image to Docker hub
+######Login to Docker hub locally
+``docker login``
+###### Upload image
+``
+docker tag <image id> <docker hub repository>/explorecali-default:latest
+``
+###### Download image
+``
+docker pull <docker hub repository>/explorecali-default
+``
+##### Run Container from docker hub image
+``
+docker run --name ec-app-default -p 8080:8080  -d <docker hub repository>/explorecali-default``
