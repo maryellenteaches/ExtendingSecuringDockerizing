@@ -78,7 +78,7 @@ docker build -t explorecali .
 ``
 ##### Run Docker container
 ``
-docker run    --name ec-app -p8080:8080 -d explorecali
+docker run  --name ec-app -p 8080:8080  --link ec-mysql:mysql -d explorecali
 ``
 ##### enter Docker container
 ``
