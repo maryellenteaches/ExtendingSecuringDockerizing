@@ -4,15 +4,17 @@ import com.example.ec.domain.TourRating;
 import com.example.ec.service.TourRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /**
  * Tour Rating Controller
@@ -23,12 +25,10 @@ import java.util.NoSuchElementException;
 @RequestMapping(path = "/tours/{tourId}/ratings")
 public class TourRatingController {
     private TourRatingService tourRatingService;
-    private RatingAssembler assembler;
 
     @Autowired
-    public TourRatingController(TourRatingService tourRatingService, RatingAssembler assembler) {
+    public TourRatingController(TourRatingService tourRatingService) {
         this.tourRatingService = tourRatingService;
-        this.assembler = assembler;
     }
 
     protected TourRatingController() {
@@ -70,10 +70,12 @@ public class TourRatingController {
      * @return
      */
     @GetMapping
-    public PagedResources<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable,
+    public Page<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable,
                                                           PagedResourcesAssembler pagedAssembler) {
         Page<TourRating> tourRatingPage = tourRatingService.lookupRatings(tourId, pageable);
-        return pagedAssembler.toResource(tourRatingPage, assembler);
+        List<RatingDto> ratingDtoList = tourRatingPage.getContent()
+                .stream().map(this::toDto).collect(Collectors.toList());
+        return new PageImpl<RatingDto>(ratingDtoList, pageable, tourRatingPage.getTotalPages());
     }
 
     /**
