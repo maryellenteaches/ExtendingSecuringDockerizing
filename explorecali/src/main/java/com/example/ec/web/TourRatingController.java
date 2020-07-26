@@ -2,20 +2,23 @@ package com.example.ec.web;
 
 import com.example.ec.domain.TourRating;
 import com.example.ec.service.TourRatingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /**
  * Tour Rating Controller
@@ -24,17 +27,14 @@ import java.util.NoSuchElementException;
  */
 @RestController
 @RequestMapping(path = "/tours/{tourId}/ratings")
+@Tag(name = "tour rating", description = "The Rating for a Tour API")
 public class TourRatingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(TourRatingController.class);
     private TourRatingService tourRatingService;
-    private RatingAssembler assembler;
-
 
     @Autowired
-    public TourRatingController(TourRatingService tourRatingService,
-                                RatingAssembler assembler) {
+    public TourRatingController(TourRatingService tourRatingService) {
         this.tourRatingService = tourRatingService;
-        this.assembler = assembler;
     }
 
     protected TourRatingController() {
@@ -50,6 +50,7 @@ public class TourRatingController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_CSR')")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a Tour Rating")
     public void createTourRating(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("POST /tours/{}/ratings", tourId);
         tourRatingService.createNew(tourId, ratingDto.getCustomerId(), ratingDto.getScore(), ratingDto.getComment());
@@ -65,6 +66,7 @@ public class TourRatingController {
     @PostMapping("/{score}")
     @PreAuthorize("hasRole('ROLE_CSR')")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Give Many Tours Same Score")
     public void createManyTourRatings(@PathVariable(value = "tourId") int tourId,
                                       @PathVariable(value = "score") int score,
                                       @RequestParam("customers") Integer customers[]) {
@@ -72,21 +74,22 @@ public class TourRatingController {
         tourRatingService.rateMany(tourId, score, customers);
     }
 
-     /**
+    /**
      * Lookup a the Ratings for a tour.
      *
      * @param tourId
      * @param pageable
-     * @param pagedAssembler
-     * @return HATEOAS enabled page of ratings.
+     * @return
      */
     @GetMapping
-    public PagedResources<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable,
+    @Operation(summary = "Lookup All Ratings for a Tour")
+    public Page<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable,
                                                           PagedResourcesAssembler pagedAssembler) {
         LOGGER.info("GET /tours/{}/ratings", tourId);
         Page<TourRating> tourRatingPage = tourRatingService.lookupRatings(tourId, pageable);
-        PagedResources<RatingDto> result =  pagedAssembler.toResource(tourRatingPage, assembler);
-        return result;
+        List<RatingDto> ratingDtoList = tourRatingPage.getContent()
+                .stream().map(this::toDto).collect(Collectors.toList());
+        return new PageImpl<RatingDto>(ratingDtoList, pageable, tourRatingPage.getTotalPages());
     }
 
     /**
@@ -96,6 +99,7 @@ public class TourRatingController {
      * @return Tuple of "average" and the average value.
      */
     @GetMapping("/average")
+    @Operation(summary = "Get the Average Score for a Tour")
     public AbstractMap.SimpleEntry<String, Double> getAverage(@PathVariable(value = "tourId") int tourId) {
         LOGGER.info("GET /tours/{}/ratings/average", tourId);
         return new AbstractMap.SimpleEntry<String, Double>("average", tourRatingService.getAverageScore(tourId));
@@ -109,6 +113,7 @@ public class TourRatingController {
      * @return The modified Rating DTO.
      */
     @PutMapping
+    @Operation(summary = "Modify All Tour Rating Attributes")
     @PreAuthorize("hasRole('ROLE_CSR')")
     public RatingDto updateWithPut(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("PUT /tours/{}/ratings", tourId);
@@ -123,6 +128,7 @@ public class TourRatingController {
      * @return The modified Rating DTO.
      */
     @PatchMapping
+    @Operation(summary = "Modify Some Tour Rating Attributes")
     @PreAuthorize("hasRole('ROLE_CSR')")
     public RatingDto updateWithPatch(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto) {
         LOGGER.info("PATCH /tours/{}/ratings", tourId);
@@ -136,6 +142,8 @@ public class TourRatingController {
      * @param tourId
      * @param customerId
      */
+
+    @Operation(summary = "Delete a Customer's Rating of a Tour")
     @DeleteMapping("/{customerId}")
     @PreAuthorize("hasRole('ROLE_CSR')")
     public void delete(@PathVariable(value = "tourId") int tourId, @PathVariable(value = "customerId") int customerId) {
@@ -150,7 +158,7 @@ public class TourRatingController {
      * @return RatingDto
      */
     private RatingDto toDto(TourRating tourRating) {
-        return assembler.toResource(tourRating);
+        return new RatingDto(tourRating.getScore(), tourRating.getComment(), tourRating.getCustomerId());
     }
 
     /**
@@ -161,7 +169,7 @@ public class TourRatingController {
      */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
-    public String return400(NoSuchElementException ex) {
+    public String return404(NoSuchElementException ex) {
         LOGGER.error("Unable to complete transaction", ex);
         return ex.getMessage();
 

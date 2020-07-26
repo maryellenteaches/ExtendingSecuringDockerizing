@@ -419,6 +419,7 @@ insert into tour  (tour_package_code, title, description, blurb, bullets, diffic
   (1, 11, 1, 'We hated it'),
   (2, 100, 5, 'I really thought it could have been better');
   
+  
 -- USER
 -- non-encrypted password: letmein
 INSERT INTO security_user (id, username, password, first_name, last_name) VALUES
