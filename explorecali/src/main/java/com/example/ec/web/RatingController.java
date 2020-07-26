@@ -1,5 +1,4 @@
 package com.example.ec.web;
-import com.example.ec.domain.TourRating;
 import com.example.ec.service.TourRatingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,14 +55,5 @@ public class RatingController {
     public String return400(NoSuchElementException ex) {
         LOGGER.error("Unable to complete transaction", ex);
         return ex.getMessage();
-    }
-    /**
-     * Convert the TourRating entity to a RatingDto
-     *
-     * @param tourRating
-     * @return RatingDto
-     */
-    private RatingDto toDto(TourRating tourRating) {
-        return new RatingDto(tourRating.getScore(), tourRating.getComment(), tourRating.getCustomerId());
     }
 }
