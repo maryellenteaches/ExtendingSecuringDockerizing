@@ -13,8 +13,7 @@ Branches correspond to videos (chapter-lesson), Master branch is the final capst
 #### 1.2 Running the microservice
 #### 1.3 Define the schema and default data
 #### 1.4 Identify transactional business services boundaries
-#### 1.5 Leveraging Spring HATEOAS
-#### 1.6 Decorate paging APIs with HATEOAS links
+
 
 ### 2. Hardening the Microservice
 #### 2.1 Adding a runtime logger
@@ -40,7 +39,7 @@ Branches correspond to videos (chapter-lesson), Master branch is the final capst
 #### 5.1 Create and run a Java application Docker image
 #### 5.2 Link the Java application and database Docker containers
 #### 5.3 Separate application image from database migration
-#### 5.4 Leverage a Docker Maven plugin
+#### 5.4 Leverage Spring Boot Docker Commands
 #### 5.5 Sharing images with Docker hub
 #### 5.6 Save Sharing images with Docker hub
 

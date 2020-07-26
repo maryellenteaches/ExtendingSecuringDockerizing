@@ -1,6 +1,11 @@
 package com.example.ec.web;
 
+import com.example.ec.domain.TourRating;
 import com.example.ec.service.TourRatingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,43 +14,45 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 
 /**
  * Created by Mary Ellen Bowman
  */
-//@Api(description = "API to just pull ratings")
 @RestController
 @RequestMapping(path = "/ratings")
+@Tag(name = "rating", description = "The rating API")
 public class RatingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingController.class);
     private TourRatingService tourRatingService;
 
-    private RatingAssembler assembler;
 
     @Autowired
-    public RatingController(TourRatingService tourRatingService, RatingAssembler assembler) {
+    public RatingController(TourRatingService tourRatingService) {
         this.tourRatingService = tourRatingService;
-        this.assembler = assembler;
     }
 
     @GetMapping
-//    @ApiOperation(value = "Find all ratings")
-//    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
+    @Operation(summary = "Find all ratings")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "OK") })
     public List<RatingDto> getAll() {
         LOGGER.info("GET /ratings");
-        return assembler.toResources(tourRatingService.lookupAll());
+        return tourRatingService.lookupAll().stream()
+                .map(t -> new RatingDto(t.getScore(), t.getComment(), t.getCustomerId()))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-//    @ApiOperation(value = "Find ratings by id")
-//    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Rating not found") })
-    public RatingDto getRating(//@ApiParam(value = "rating identifier")
-                                   @PathVariable("id") Integer id) {
+    @Operation(summary = "Find ratings by id")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "OK"),
+                            @ApiResponse(responseCode = "404", description = "Rating not found") })
+    public RatingDto getRating(@PathVariable("id") Integer id) {
         LOGGER.info("GET /ratings/{id}", id);
-        return assembler.toResource(tourRatingService.lookupRatingById(id)
-                .orElseThrow(() -> new NoSuchElementException("Rating " + id + " not found"))
-        );
+        return tourRatingService.lookupRatingById(id)
+                .map(t -> new RatingDto(t.getScore(), t.getComment(), t.getCustomerId()))
+                .orElseThrow(() -> new NoSuchElementException("Rating " + id + " not found"));
+
     }
 
 
