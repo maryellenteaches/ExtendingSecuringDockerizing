@@ -68,13 +68,4 @@ public class RatingController {
         LOGGER.error("Unable to complete transaction", ex);
         return ex.getMessage();
     }
-    /**
-     * Convert the TourRating entity to a RatingDto
-     *
-     * @param tourRating
-     * @return RatingDto
-     */
-    private RatingDto toDto(TourRating tourRating) {
-        return new RatingDto(tourRating.getScore(), tourRating.getComment(), tourRating.getCustomerId());
-    }
 }
