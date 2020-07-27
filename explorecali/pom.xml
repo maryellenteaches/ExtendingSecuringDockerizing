@@ -77,6 +77,13 @@
 			<artifactId>springdoc-openapi-data-rest</artifactId>
 			<version>1.4.3</version>
 		</dependency>
+		<dependency>
+			<!-- JSON Web Token Support -->
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.7.0</version>
+		</dependency>
+
 	</dependencies>
 
     <build>
