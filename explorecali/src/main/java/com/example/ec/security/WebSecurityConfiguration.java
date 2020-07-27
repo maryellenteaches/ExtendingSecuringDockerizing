@@ -1,6 +1,5 @@
 package com.example.ec.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +23,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/tours/**").permitAll()
                 .antMatchers("/ratings/**").permitAll()
                 .antMatchers("/users/signin").permitAll()
+                .antMatchers("/v3/api-docs/**","/swagger-ui/**", "/swagger-ui.html").permitAll()
                 // Disallow everything else..
                 .anyRequest().authenticated();
 
