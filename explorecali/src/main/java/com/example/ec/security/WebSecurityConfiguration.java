@@ -23,6 +23,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/tours/**").permitAll()
                 .antMatchers("/ratings/**").permitAll()
                 .antMatchers("/users/signin").permitAll()
+                .antMatchers("/v3/api-docs/**","/swagger-ui/**", "/swagger-ui.html").permitAll()
                 // Disallow everything else..
                 .anyRequest().authenticated();
 
