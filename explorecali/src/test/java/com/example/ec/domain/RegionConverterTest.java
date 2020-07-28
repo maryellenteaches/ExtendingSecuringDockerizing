@@ -3,7 +3,7 @@ package com.example.ec.domain;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Created by Mary Ellen Bowman.
