@@ -2,11 +2,10 @@ package com.example.ec.domain;
 
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 /**
  * Created by Mary Ellen Bowman
  */

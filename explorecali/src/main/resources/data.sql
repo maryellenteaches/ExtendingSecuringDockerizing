@@ -1,3 +1,4 @@
+
 insert into tour_package (code, name) values
 ('BC', 'Backpack Cal'),
 ('CC', 'California Calm'),
@@ -418,8 +419,8 @@ insert into tour  (tour_package_code, title, description, blurb, bullets, diffic
   (1, 10, 1, 'I hated it'),
   (1, 11, 1, 'We hated it'),
   (2, 100, 5, 'I really thought it could have been better');
-  
-  
+
+
 -- USER
 -- non-encrypted password: letmein
 INSERT INTO security_user (id, username, password, first_name, last_name) VALUES
@@ -439,4 +440,4 @@ INSERT INTO user_role(user_id, role_id) VALUES
  (3, 2),  -- give Mark ROLE_CSR
  (4, 1),  -- give Wally ROLE_ADMIN
  (4, 2);  -- give Wally ROLE_CSR
- 
+
