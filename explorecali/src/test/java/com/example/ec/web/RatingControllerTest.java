@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestClientException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +57,6 @@ public class RatingControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-
     @Before
     public void setupReturnValuesOfMockMethods() {
         when(tourRatingMock.getTour()).thenReturn(tourMock);
@@ -96,5 +96,17 @@ public class RatingControllerTest {
         assertThat(response.getBody().getCustomerId(), is(CUSTOMER_ID));
         assertThat(response.getBody().getComment(), is(COMMENT));
         assertThat(response.getBody().getScore(), is(SCORE));
+    }
+
+    @Test(expected = RestClientException.class)
+    public void getOne_notFound() {
+        try {
+            when(tourRatingServiceMock.lookupRatingById(RATING_ID)).thenReturn(Optional.empty());
+
+            ResponseEntity<RatingDto> response =
+                    restTemplate.getForEntity(RATINGS_URL + "/" + RATING_ID, RatingDto.class);
+        } catch(RestClientException e){
+            e.printStackTrace();
+        }
     }
 }

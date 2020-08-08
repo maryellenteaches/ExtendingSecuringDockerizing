@@ -20,7 +20,6 @@ public class RatingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingController.class);
     private TourRatingService tourRatingService;
 
-
     @Autowired
     public RatingController(TourRatingService tourRatingService) {
         this.tourRatingService = tourRatingService;
@@ -40,9 +39,7 @@ public class RatingController {
         return tourRatingService.lookupRatingById(id)
                 .map(t -> new RatingDto(t.getScore(), t.getComment(), t.getCustomerId()))
                 .orElseThrow(() -> new NoSuchElementException("Rating " + id + " not found"));
-
     }
-
 
     /**
      * Exception handler if NoSuchElementException is thrown in this Controller
@@ -52,7 +49,7 @@ public class RatingController {
      */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
-    public String return400(NoSuchElementException ex) {
+    public String return404(NoSuchElementException ex) {
         LOGGER.error("Unable to complete transaction", ex);
         return ex.getMessage();
     }
