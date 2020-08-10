@@ -18,10 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestClientException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
@@ -72,10 +74,12 @@ public class RatingControllerTest {
      */
     @Test
     public void getRatings() {
-        when(tourRatingServiceMock.lookupAll()).thenReturn(Arrays.asList(tourRatingMock, tourRatingMock, tourRatingMock));
+        when(tourRatingServiceMock.lookupAll())
+                .thenReturn(
+                        Arrays.asList(tourRatingMock, tourRatingMock, tourRatingMock));
 
-        ResponseEntity<List<RatingDto>> response = restTemplate.exchange(RATINGS_URL, HttpMethod.GET,null,
-                                                    new ParameterizedTypeReference<List<RatingDto>>() {});
+        ResponseEntity<List> response = restTemplate
+                .getForEntity(RATINGS_URL, List.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody().size(), is(3));
@@ -87,10 +91,11 @@ public class RatingControllerTest {
     @Test
     public void getOne()  {
 
-        when(tourRatingServiceMock.lookupRatingById(RATING_ID)).thenReturn(Optional.of(tourRatingMock));
+        when(tourRatingServiceMock.lookupRatingById(RATING_ID))
+                .thenReturn(Optional.of(tourRatingMock));
 
-        ResponseEntity<RatingDto> response =
-                restTemplate.getForEntity(RATINGS_URL + "/" + RATING_ID, RatingDto.class);
+        ResponseEntity<RatingDto> response = restTemplate
+                .getForEntity(RATINGS_URL + "/" + RATING_ID, RatingDto.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody().getCustomerId(), is(CUSTOMER_ID));
@@ -98,15 +103,15 @@ public class RatingControllerTest {
         assertThat(response.getBody().getScore(), is(SCORE));
     }
 
-    @Test(expected = RestClientException.class)
+    @Test
     public void getOne_notFound() {
-        try {
-            when(tourRatingServiceMock.lookupRatingById(RATING_ID)).thenReturn(Optional.empty());
+        when(tourRatingServiceMock.lookupRatingById(RATING_ID))
+                .thenReturn(Optional.empty());
 
-            ResponseEntity<RatingDto> response =
-                    restTemplate.getForEntity(RATINGS_URL + "/" + RATING_ID, RatingDto.class);
-        } catch(RestClientException e){
-            e.printStackTrace();
-        }
+        ResponseEntity<String> response =
+                restTemplate.getForEntity(RATINGS_URL + "/" + RATING_ID, String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        assertThat(response.getBody(),
+                containsString("Rating " + RATING_ID + " not found"));
     }
 }

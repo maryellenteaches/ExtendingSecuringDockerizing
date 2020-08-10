@@ -3,6 +3,7 @@ package com.example.ec.web;
 import com.example.ec.domain.Tour;
 import com.example.ec.domain.TourRating;
 import com.example.ec.service.TourRatingService;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,11 +19,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -78,9 +83,11 @@ public class TourRatingControllerTest {
      */
     @Test
     public void createTourRating() throws Exception {
-        restTemplate.postForEntity(TOUR_RATINGS_URL, ratingDto, Void.class);
+        restTemplate
+                .postForEntity(TOUR_RATINGS_URL, ratingDto, Void.class);
 
-        verify(this.serviceMock).createNew(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT);
+        verify(this.serviceMock)
+                .createNew(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT);
     }
 
     /**
@@ -92,14 +99,16 @@ public class TourRatingControllerTest {
 
         verify(serviceMock).delete(TOUR_ID, CUSTOMER_ID);
     }
-
     /**
      *  HTTP POST /tours/{tourId}/ratings/{score}?customers={ids..}
      */
     @Test
     public void createManyTourRatings() throws Exception {
-        restTemplate.postForEntity(TOUR_RATINGS_URL + "/" + SCORE + "?customers=" + CUSTOMER_ID, ratingDto, Void.class);
-        verify(serviceMock).rateMany(TOUR_ID, SCORE, new Integer[] {CUSTOMER_ID});
+        restTemplate
+                .postForEntity(TOUR_RATINGS_URL + "/" + SCORE + "?customers=" + CUSTOMER_ID, ratingDto, Void.class);
+
+        verify(serviceMock)
+                .rateMany(TOUR_ID, SCORE, new Integer[] {CUSTOMER_ID});
     }
 
     /**
@@ -107,9 +116,9 @@ public class TourRatingControllerTest {
      */
     @Test
     public void getAllRatingsForTour() throws Exception {
-        List<TourRating> listOfTourRatings = Arrays.asList(tourRatingMock);
-        Page<TourRating> page = new PageImpl(listOfTourRatings, PageRequest.of(0,10),1);
-        when(serviceMock.lookupRatings(anyInt(),any(Pageable.class))).thenReturn(page);
+        when(serviceMock.lookupRatings(anyInt(),any(Pageable.class)))
+                .thenReturn(new PageImpl(Arrays.asList(tourRatingMock),
+                        PageRequest.of(0,10),1));
 
         ResponseEntity<String> response = restTemplate.getForEntity(TOUR_RATINGS_URL,String.class);
 
@@ -124,18 +133,31 @@ public class TourRatingControllerTest {
     public void getAverage() throws Exception {
         when(serviceMock.getAverageScore(TOUR_ID)).thenReturn(3.2);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(TOUR_RATINGS_URL + "/average", String.class);
+        ResponseEntity<String> response = restTemplate
+                .getForEntity(TOUR_RATINGS_URL + "/average", String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody(), is("{\"average\":3.2}"));
     }
+    @Test
+    public void getAverage_TourNotFound() {
+        when(serviceMock.getAverageScore(TOUR_ID))
+                .thenThrow(NoSuchElementException.class);
+
+        ResponseEntity<String> response = restTemplate.
+                getForEntity(TOUR_RATINGS_URL + "/average", String.class);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
+    }
+
 
     /**
      *  HTTP PUT /tours/{tourId}/ratings
      */
     @Test
     public void updateWithPut() throws Exception {
-        when(serviceMock.update(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT)).thenReturn(tourRatingMock);
+        when(serviceMock.update(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT))
+                .thenReturn(tourRatingMock);
 
         restTemplate.put(TOUR_RATINGS_URL, ratingDto);
 
@@ -158,15 +180,14 @@ public class TourRatingControllerTest {
      *      restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
      */
     @Test
-    @Ignore
     public  void updateWithPatch() {
-
-        when(serviceMock.updateSome(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT)).thenReturn(tourRatingMock);
+        restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        when(serviceMock.updateSome(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT))
+                .thenReturn(tourRatingMock);
 
         restTemplate.patchForObject(TOUR_RATINGS_URL, ratingDto, RatingDto.class);
 
         verify(serviceMock).updateSome(TOUR_ID, CUSTOMER_ID, SCORE, COMMENT);
-
     }
 
 }
