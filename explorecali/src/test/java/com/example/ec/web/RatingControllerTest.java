@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
@@ -98,15 +99,15 @@ public class RatingControllerTest {
         assertThat(response.getBody().getScore(), is(SCORE));
     }
 
-    @Test(expected = RestClientException.class)
+    @Test
     public void getOne_notFound() {
-        try {
-            when(tourRatingServiceMock.lookupRatingById(RATING_ID)).thenReturn(Optional.empty());
+        when(tourRatingServiceMock.lookupRatingById(RATING_ID))
+                .thenReturn(Optional.empty());
 
-            ResponseEntity<RatingDto> response =
-                    restTemplate.getForEntity(RATINGS_URL + "/" + RATING_ID, RatingDto.class);
-        } catch(RestClientException e){
-            e.printStackTrace();
-        }
+        ResponseEntity<String> response =
+                restTemplate.getForEntity(RATINGS_URL + "/" + RATING_ID, String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        assertThat(response.getBody(),
+                containsString("Rating " + RATING_ID + " not found"));
     }
 }
