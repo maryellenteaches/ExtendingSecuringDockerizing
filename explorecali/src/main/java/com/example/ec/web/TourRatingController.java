@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping(path = "/tours/{tourId}/ratings")
-@Tag(name = "tour rating", description = "The Rating for a Tour API")
+@Tag(name = "Tour Rating", description = "The Rating for a Tour API")
 public class TourRatingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(TourRatingController.class);
     private TourRatingService tourRatingService;

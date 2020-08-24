@@ -1,6 +1,5 @@
 package com.example.ec.web;
 
-import com.example.ec.domain.TourRating;
 import com.example.ec.service.TourRatingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping(path = "/ratings")
-@Tag(name = "rating", description = "The rating API")
+@Tag(name = "Rating", description = "The Rating API")
 public class RatingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingController.class);
     private TourRatingService tourRatingService;
