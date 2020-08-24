@@ -6,15 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.AbstractMap;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /**
  * Tour Rating Controller
@@ -26,14 +29,10 @@ import java.util.AbstractMap;
 public class TourRatingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(TourRatingController.class);
     private TourRatingService tourRatingService;
-    private RatingAssembler assembler;
-
 
     @Autowired
-    public TourRatingController(TourRatingService tourRatingService,
-                                RatingAssembler assembler) {
+    public TourRatingController(TourRatingService tourRatingService) {
         this.tourRatingService = tourRatingService;
-        this.assembler = assembler;
     }
 
     protected TourRatingController() {
@@ -71,21 +70,21 @@ public class TourRatingController {
         tourRatingService.rateMany(tourId, score, customers);
     }
 
-     /**
+    /**
      * Lookup a the Ratings for a tour.
      *
      * @param tourId
      * @param pageable
-     * @param pagedAssembler
-     * @return HATEOAS enabled page of ratings.
+     * @return
      */
     @GetMapping
-    public PagedResources<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable,
+    public Page<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId, Pageable pageable,
                                                           PagedResourcesAssembler pagedAssembler) {
         LOGGER.info("GET /tours/{}/ratings", tourId);
         Page<TourRating> tourRatingPage = tourRatingService.lookupRatings(tourId, pageable);
-        PagedResources<RatingDto> result =  pagedAssembler.toResource(tourRatingPage, assembler);
-        return result;
+        List<RatingDto> ratingDtoList = tourRatingPage.getContent()
+                .stream().map(this::toDto).collect(Collectors.toList());
+        return new PageImpl<RatingDto>(ratingDtoList, pageable, tourRatingPage.getTotalPages());
     }
 
     /**
@@ -149,8 +148,21 @@ public class TourRatingController {
      * @return RatingDto
      */
     private RatingDto toDto(TourRating tourRating) {
-        return assembler.toResource(tourRating);
+        return new RatingDto(tourRating.getScore(), tourRating.getComment(), tourRating.getCustomerId());
     }
 
+    /**
+     * Exception handler if NoSuchElementException is thrown in this Controller
+     *
+     * @param ex
+     * @return Error message String.
+     */
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoSuchElementException.class)
+    public String return404(NoSuchElementException ex) {
+        LOGGER.error("Unable to complete transaction", ex);
+        return ex.getMessage();
+
+    }
 
 }
