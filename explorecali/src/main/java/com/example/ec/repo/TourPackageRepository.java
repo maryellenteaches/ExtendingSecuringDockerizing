@@ -14,6 +14,7 @@ import java.util.Optional;
  * Created by Mary Ellen Bowman
  */
 @RepositoryRestResource(collectionResourceRel = "packages", path = "packages")
+//@Tag(name = "Tour Package", description = "The Tour Package API")
 public interface TourPackageRepository extends CrudRepository<TourPackage, String> {
 
     /**

@@ -12,6 +12,8 @@ import org.springframework.data.rest.core.annotation.RestResource;
  *
  * Created by Mary Ellen Bowman
  */
+
+//@Tag(name = "Tour", description = "The Tour API")
 public interface TourRepository extends PagingAndSortingRepository<Tour,Integer> {
 
     /**
