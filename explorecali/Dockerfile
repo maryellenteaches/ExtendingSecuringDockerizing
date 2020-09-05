@@ -1,5 +1,5 @@
-FROM java:8
+FROM openjdk:13
 WORKDIR /
-ADD target/explorecali-2.0.0-SNAPSHOT.jar //
+ADD target/explorecali-3.0.0-SNAPSHOT.jar //
 EXPOSE 8080
-ENTRYPOINT [ "java", "-Dspring.profiles.active=docker", "-jar", "/explorecali-2.0.0-SNAPSHOT.jar"]
+ENTRYPOINT [ "java", "-jar", "-Dspring.profile.active=mysql", "/explorecali-3.0.0-SNAPSHOT.jar"]
