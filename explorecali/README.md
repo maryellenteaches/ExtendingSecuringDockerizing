@@ -55,7 +55,7 @@ mvn spring-boot:run
 or
 
 ``
-java  -jar target/explorecali-2.0.0-SNAPSHOT.jar
+java  -jar target/explorecali-3.0.0-SNAPSHOT.jar
 ``
 ##### mysql profile, MySql database (requires running container ec-mysql)
 ``
@@ -65,7 +65,7 @@ mvn spring-boot:run -Dspring.profiles.active=mysql
 or
 
 ``
-java  -Dspring.profiles.active=mysql -jar target/explorecali-2.0.0-SNAPSHOT.jar
+java  -Dspring.profiles.active=mysql -jar target/explorecali-3.0.0-SNAPSHOT.jar
 ``
 #### Dockerize Explore California
 ##### Build jar, image, set default profile
