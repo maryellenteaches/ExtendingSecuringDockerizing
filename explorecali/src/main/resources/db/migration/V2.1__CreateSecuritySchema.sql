@@ -3,7 +3,7 @@ CREATE TABLE security_role (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   description varchar(100) DEFAULT NULL,
   role_name varchar(100) DEFAULT NULL
-) ENGINE=INNODB;
+);
 
 
 CREATE TABLE security_user (
@@ -12,7 +12,7 @@ CREATE TABLE security_user (
   password varchar(255) NOT NULL,
   first_name varchar(255) NOT NULL,
   last_name varchar(255) NOT NULL
-)ENGINE=INNODB;
+);
 
 
 CREATE TABLE user_role (
