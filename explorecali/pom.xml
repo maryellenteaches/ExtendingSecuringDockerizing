@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>13</java.version>
+		<ec-profile>default</ec-profile>
 	</properties>
 
 	<dependencies>
@@ -115,11 +116,11 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>1.1.1</version>
+                <version>1.2.2</version>
                 <configuration>
                     <imageName>explorecali-${ec-profile}</imageName>
-                    <baseImage>java</baseImage>
-                    <entryPoint>["java", "-Dspring.profiles.active=${ec-profile}", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+                    <baseImage>openjdk:13</baseImage>
+                    <entryPoint>["java", "-Dspring.profiles.active=${ec-profile}", "-jar", "${project.build.finalName}.jar"]</entryPoint>
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
