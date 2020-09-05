@@ -1,10 +1,6 @@
 package com.example.ec.web;
 
 import com.example.ec.service.TourRatingService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,41 +9,39 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 
 /**
  * Created by Mary Ellen Bowman
  */
-@Api(description = "API to just pull ratings")
 @RestController
 @RequestMapping(path = "/ratings")
 public class RatingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingController.class);
     private TourRatingService tourRatingService;
 
-    private RatingAssembler assembler;
 
     @Autowired
-    public RatingController(TourRatingService tourRatingService, RatingAssembler assembler) {
+    public RatingController(TourRatingService tourRatingService) {
         this.tourRatingService = tourRatingService;
-        this.assembler = assembler;
     }
 
     @GetMapping
     public List<RatingDto> getAll() {
         LOGGER.info("GET /ratings");
-        return assembler.toResources(tourRatingService.lookupAll());
+        return tourRatingService.lookupAll().stream()
+                .map(t -> new RatingDto(t.getScore(), t.getComment(), t.getCustomerId()))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Find ratings by id")
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK"), @ApiResponse(code = 404, message = "Rating not found") })
-    public RatingDto getRating(//@ApiParam(value = "rating identifier")
-                                   @PathVariable("id") Integer id) {
+    public RatingDto getRating(@PathVariable("id") Integer id) {
         LOGGER.info("GET /ratings/{id}", id);
-        return assembler.toResource(tourRatingService.lookupRatingById(id)
-                .orElseThrow(() -> new NoSuchElementException("Rating " + id + " not found"))
-        );
+        return tourRatingService.lookupRatingById(id)
+                .map(t -> new RatingDto(t.getScore(), t.getComment(), t.getCustomerId()))
+                .orElseThrow(() -> new NoSuchElementException("Rating " + id + " not found"));
+
     }
 
 
