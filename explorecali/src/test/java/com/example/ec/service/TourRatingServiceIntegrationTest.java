@@ -104,7 +104,7 @@ public class TourRatingServiceIntegrationTest {
     @Test
     public void updateSome() {
         createNew();
-        TourRating tourRating = service.update(TOUR_ID, CUSTOMER_ID, 1, "one");
+        TourRating tourRating = service.updateSome(TOUR_ID, CUSTOMER_ID, 1, "one");
         assertThat(tourRating.getTour().getId(), is(TOUR_ID));
         assertThat(tourRating.getCustomerId(), is(CUSTOMER_ID));
         assertThat(tourRating.getScore(), is(1));
@@ -114,7 +114,7 @@ public class TourRatingServiceIntegrationTest {
     //Unhappy path, no Tour Rating exists for tourId=1 and customer=1
     @Test(expected = NoSuchElementException.class)
     public void updateSomeException() throws Exception {
-        service.update(1, 1, 1, "one");
+        service.updateSome(1, 1, 1, "one");
     }
 
     //Happy Path get average score of a Tour.
